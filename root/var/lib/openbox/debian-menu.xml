@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openbox_menu>
+  <menu id="root-menu" label="Openbox 3">
+    <item
+      label="Terminal emulator"
+      icon="/usr/share/icons/hicolor/48x48/apps/xterm.png"
+    >
+      <action name="execute">
+        <execute>x-terminal-emulator</execute>
+      </action>
+    </item>
+    <separator />
+    <menu
+      id="apps"
+      label="Applications"
+      execute="openbox-menu lxde-applications.menu"
+    />
+  </menu>
+</openbox_menu>
