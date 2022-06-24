@@ -1,0 +1,19 @@
+#!/command/execlineb -P
+
+with-contenv
+
+multisubstitute
+{
+    importas -u password VNC_SERVER_PASSWORD
+    define password_file "/root/.vncpswd"
+}
+
+ifthenelse { test -z "$password" }
+{
+    rm -f "$password_file"
+}
+{
+    execline-umask 600
+    redirfd -w 2 /dev/null
+    if { /usr/bin/x11vnc -storepasswd "$password" "$password_file" }
+}

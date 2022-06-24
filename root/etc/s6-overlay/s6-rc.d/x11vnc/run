@@ -1,0 +1,17 @@
+#!/command/execlineb -P
+
+with-contenv
+
+multisubstitute
+{
+    importas DISPLAY DISPLAY
+    define password_file "/root/.vncpswd"
+}
+
+ifthenelse -s { test -s "$password_file" }
+{ define -s password_arg "-rfbauth ${password_file}" }
+{ define -s password_arg "-nopw" }
+
+redirfd -w 2 /dev/null
+
+/usr/bin/x11vnc -q -display "$DISPLAY" "$password_arg" -forever -listen 0.0.0.0 -xkb -many

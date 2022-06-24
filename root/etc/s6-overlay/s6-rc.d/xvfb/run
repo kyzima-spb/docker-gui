@@ -1,0 +1,10 @@
+#!/command/execlineb -P
+
+with-contenv
+multisubstitute
+{
+    importas DISPLAY DISPLAY
+    importas -D "1280x720x24" resolution XVFB_RESOLUTION
+}
+
+/usr/bin/Xvfb "$DISPLAY" -screen 0 "$resolution" -ac -noreset -nolisten tcp
