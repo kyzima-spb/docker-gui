@@ -1,6 +1,7 @@
 #!/command/execlineb -P
 
 with-contenv
+
 multisubstitute
 {
     importas DISPLAY DISPLAY
