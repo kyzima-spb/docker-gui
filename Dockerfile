@@ -1,12 +1,13 @@
 ARG RELEASE=bullseye-slim
-ARG S6_DOWNLOAD_URL=https://github.com/just-containers/s6-overlay/releases/download
-ARG S6_OVERLAY_VERSION=3.1.0.1
-ARG UID=1000
-ARG GID=1000
 
 FROM debian:$RELEASE
 
 LABEL maintainer="Kirill Vercetti <office@kyzima-spb.com>"
+
+ARG S6_DOWNLOAD_URL=https://github.com/just-containers/s6-overlay/releases/download
+ARG S6_OVERLAY_VERSION=3.1.0.1
+ARG UID=1000
+ARG GID=1000
 
 STOPSIGNAL SIGTERM
 
