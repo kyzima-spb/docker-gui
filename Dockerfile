@@ -1,9 +1,10 @@
-FROM debian:bullseye-slim
-
+ARG RELEASE=bullseye-slim
 ARG S6_DOWNLOAD_URL=https://github.com/just-containers/s6-overlay/releases/download
 ARG S6_OVERLAY_VERSION=3.1.0.1
 ARG UID=1000
 ARG GID=1000
+
+FROM debian:$RELEASE
 
 LABEL maintainer="Kirill Vercetti <office@kyzima-spb.com>"
 
@@ -24,6 +25,8 @@ RUN set -ex \
         openbox \
         openbox-menu \
         x11vnc \
+        numix-gtk-theme \
+        xmlstarlet \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -46,5 +49,16 @@ RUN set -ex \
 COPY ./root /
 
 USER user
+
+RUN set -ex \
+    && /bin/bash -c 'mkdir -p /home/user/.config/{gtk-3.0,openbox}' \
+    && cp /etc/xdg/openbox/rc.xml /home/user/.config/openbox \
+    && xmlstarlet edit -L \
+        -N o="http://openbox.org/3.4/rc" \
+        -u /o:openbox_config/o:theme/o:name \
+        -v Numix \
+            /home/user/.config/openbox/rc.xml \
+    && echo "[Settings]\ngtk-theme-name=Numix" > /home/user/.config/gtk-3.0/settings.ini \
+    && echo 'gtk-theme-name="Numix"' > /home/user/.gtkrc-2.0
 
 ENTRYPOINT ["/init"]
