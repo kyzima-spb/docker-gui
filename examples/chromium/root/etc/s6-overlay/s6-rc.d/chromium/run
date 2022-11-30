@@ -1,0 +1,7 @@
+#!/command/execlineb -P
+
+with-contenv
+
+redirfd -w 2 /dev/null
+
+chromium --no-sandbox --start-maximized
