@@ -5,7 +5,7 @@ with-contenv
 multisubstitute
 {
     importas -u password VNC_SERVER_PASSWORD
-    define password_file "/root/.vncpswd"
+    define password_file "/home/user/.vncpswd"
 }
 
 ifthenelse { test -z "$password" }
