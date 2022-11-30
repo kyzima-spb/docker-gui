@@ -2,7 +2,11 @@ ARG RELEASE=bullseye-slim
 
 FROM debian:$RELEASE
 
-LABEL maintainer="Kirill Vercetti <office@kyzima-spb.com>"
+LABEL \
+    maintainer="Kirill Vercetti <office@kyzima-spb.com>"
+    org.label-schema.name="gui"
+    org.label-schema.description="The base image for running GUI applications in Docker"
+    org.label-schema.vcs-url="https://github.com/kyzima-spb/docker-gui"
 
 ARG S6_DOWNLOAD_URL=https://github.com/just-containers/s6-overlay/releases/download
 ARG S6_OVERLAY_VERSION=3.1.2.1
