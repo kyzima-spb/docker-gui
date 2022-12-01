@@ -10,6 +10,10 @@ docker-gui
     or on the current OS.
 
 
+.. contents::
+   :depth: 5
+
+
 How to create a new image?
 --------------------------
 
