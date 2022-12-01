@@ -149,6 +149,24 @@ Environment Variables
 * ``XVFB_RESOLUTION`` - screen resolution of the virtual X server;
 * ``VNC_SERVER_PASSWORD`` - the password for the VNC server.
 
+Autostart with a password
+-------------------------
+
+Automatically start the container at system startup
+with the password `qwe123` to connect to the VNC server:
+
+.. code-block:: shell
+    
+    $ docker run -d --name chromium_1 \
+        -p 5900:5900 \
+        --shm-size 2g \
+        --restart always \
+        -e VNC_SERVER_PASSWORD=qwe123 \
+        chromium
+
+The source code for the example is available in the
+``examples/chromium`` directory.
+
 
 .. _s6-overlay: https://github.com/just-containers/s6-overlay
 .. _execline: https://skarnet.org/software/execline/
