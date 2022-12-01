@@ -2,7 +2,6 @@ docker-gui
 ==========
 
 **docker-gui** - is the base image for running GUI applications in Docker.
-The image uses the s6-overlay_ service manager.
 
 .. note::
 
@@ -14,15 +13,41 @@ The image uses the s6-overlay_ service manager.
 How to create a new image?
 --------------------------
 
-Image directory
-~~~~~~~~~~~~~~~
+Create image directory
+~~~~~~~~~~~~~~~~~~~~~~
 
 Create a new directory for the image files anywhere and go to it:
 
-.. code-block:: bash
+.. code-block:: shell
 
     $ mkdir ~/docker-chromium
     $ cd ~/docker-chromium
+
+Next, create a directory and file structure as shown below:
+
+.. code-block::
+
+    .
+    ├── Dockerfile
+    └── root
+        └── etc
+            └── s6-overlay
+                └── s6-rc.d
+                    ├── chromium
+                    │   ├── dependencies
+                    │   ├── run
+                    │   └── type
+                    └── user
+                        └── contents.d
+                            └── chromium
+
+The image uses the s6-overlay_ service manager.
+Therefore, to understand why each directory or file is needed,
+it is better to refer to the official documentation.
+
+Create service
+~~~~~~~~~~~~~~
+
 
 Dockerfile
 ~~~~~~~~~~
