@@ -52,7 +52,7 @@ Create service
 
 The file ``./root/etc/s6-overlay/s6-rc.d/chromium/run``
 contains the code to start the service (in the example browser).
-It is recommended to use the execline language:
+It is recommended to use the execline_ language:
 
 .. code-block:: shell
 
@@ -110,21 +110,38 @@ with all required dependencies, for example:
     USER user
 
 
-Build and start
-~~~~~~~~~~~~~~~
+Build
+~~~~~
 
-.. code-block:: bash
+Build an image file named chromium:
+
+.. code-block:: shell
     
-    docker build -t chromium .
-    docker run -d --name gui_demo \
-        -p 5900:5900 \
-        --shm-size 2g \
-        chromium
+    $ docker build -t chromium .
+
+Run in daemon mode
+~~~~~~~~~~~~~~~~~~
+
+Run the container named ``chromium_1`` in daemon mode
+and forward the specified ports
+to the specified ports of the host machine:
+
+.. code-block:: shell
+
+    $ docker run -d --name chromium_1 \
+          -p 5900:5900 \
+          --shm-size 2g \
+          chromium
 
 Forwarded ports:
 
 * ``5900`` - TCP port for connecting VNC clients;
 
+Stop a running container:
+
+.. code-block:: shell
+
+    $ docker stop chromium_1
 
 Environment Variables
 ---------------------
