@@ -13,6 +13,8 @@ docker-gui
 How to create a new image?
 --------------------------
 
+Let's look at an example of creating a new image to run the Chromium browser in Docker.
+
 Create image directory
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -48,6 +50,19 @@ it is better to refer to the official documentation.
 Create service
 ~~~~~~~~~~~~~~
 
+The file ``./root/etc/s6-overlay/s6-rc.d/chromium/run``
+contains the code to start the service (in the example browser).
+It is recommended to use the execline language:
+
+.. code-block:: execline
+
+    #!/command/execlineb -P
+
+    with-contenv
+
+    redirfd -w 2 /dev/null
+
+    chromium --no-sandbox --start-maximized
 
 Dockerfile
 ~~~~~~~~~~
@@ -100,3 +115,4 @@ Environment Variables
 
 
 .. _s6-overlay: https://github.com/just-containers/s6-overlay
+.. _execline: https://skarnet.org/software/execline/
