@@ -54,7 +54,7 @@ The file ``./root/etc/s6-overlay/s6-rc.d/chromium/run``
 contains the code to start the service (in the example browser).
 It is recommended to use the execline language:
 
-.. code-block:: execline
+.. code-block:: shell
 
     #!/command/execlineb -P
 
@@ -63,6 +63,25 @@ It is recommended to use the execline language:
     redirfd -w 2 /dev/null
 
     chromium --no-sandbox --start-maximized
+
+In the ``./root/etc/s6-overlay/s6-rc.d/chromium/type`` file,
+specify the type of service: ``longrun`` - starts at startup, if the service crashes,
+it will be restarted (the browser cannot be closed =)
+
+.. code-block::
+
+    longrun
+
+In the ``./root/etc/s6-overlay/s6-rc.d/chromium/dependencies`` file,
+specify the dependencies on other services (who should be started first),
+one dependency per line:
+
+.. code-block::
+
+    x11vnc
+
+The file ``./root/etc/s6-overlay/s6-rc.d/user/contents.d/chromium`` is empty,
+it is a link indicating that this service is enabled and should be started.
 
 Dockerfile
 ~~~~~~~~~~
