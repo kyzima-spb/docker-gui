@@ -60,8 +60,8 @@ RUN set -ex \
     && cp /etc/xdg/openbox/rc.xml /home/user/.config/openbox \
     && xmlstarlet edit -L \
         -N o="http://openbox.org/3.4/rc" \
-        -u /o:openbox_config/o:theme/o:name \
-        -v Numix \
+        -u /o:openbox_config/o:theme/o:name -v Numix \
+        -u /o:openbox_config/o:desktops/o:number -v 1 \
             /home/user/.config/openbox/rc.xml \
     && echo "[Settings]\ngtk-theme-name=Numix" > /home/user/.config/gtk-3.0/settings.ini \
     && echo 'gtk-theme-name="Numix"' > /home/user/.gtkrc-2.0
