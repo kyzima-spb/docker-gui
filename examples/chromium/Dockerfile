@@ -1,11 +1,10 @@
-FROM kyzimaspb/gui
+FROM kyzimaspb/bullseye-slim
 
 USER root
 
 RUN set -x \
     && apt update \
-    && apt install -yq --no-install-recommends \
-        chromium xterm \
+    && apt install -yq --no-install-recommends chromium \
     && apt-get clean  \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

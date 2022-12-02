@@ -82,7 +82,7 @@ one dependency per line:
 
 .. code-block::
 
-    x11vnc
+    openbox
 
 The file ``./root/etc/s6-overlay/s6-rc.d/user/contents.d/chromium`` is empty,
 it is a link indicating that this service is enabled and should be started.
@@ -95,7 +95,7 @@ with all required dependencies, for example:
 
 .. code-block:: dockerfile
 
-    FROM kyzimaspb/gui
+    FROM kyzimaspb/bullseye-slim
 
     # By default, all services run as a normal user
     # To install, you need to switch to superuser
@@ -171,6 +171,10 @@ with the password `qwe123` to connect to the VNC server:
 The source code for the example is available in the
 ``examples/chromium`` directory.
 
+
+docker build -t kyzimaspb/gui --build-arg RELEASE=stretch-slim .
+docker build -t kyzimaspb/gui --build-arg RELEASE=buster-slim .
+docker build -t kyzimaspb/gui .
 
 .. _s6-overlay: https://github.com/just-containers/s6-overlay
 .. _execline: https://skarnet.org/software/execline/
