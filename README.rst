@@ -154,7 +154,7 @@ Environment Variables
 * ``VNC_SERVER_PASSWORD`` - the password for the VNC server.
 
 Autostart with a password
--------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Automatically start the container at system startup
 with the password `qwe123` to connect to the VNC server:
@@ -172,9 +172,29 @@ The source code for the example is available in the
 ``examples/chromium`` directory.
 
 
-docker build -t kyzimaspb/gui --build-arg RELEASE=stretch-slim .
-docker build -t kyzimaspb/gui --build-arg RELEASE=buster-slim .
-docker build -t kyzimaspb/gui .
+Build Arguments
+---------------
+
+* ``RELEASE`` - The release name of the Debian distribution.
+  Available values are ``stretch-slim``, ``buster-slim``, ``bullseye-slim``.
+  The default is ``bullseye-slim``.
+* ``S6_DOWNLOAD_URL`` - Download URL for s6-overlay_.
+  The default is ``https://github.com/just-containers/s6-overlay/releases/download``.
+* ``S6_OVERLAY_VERSION`` - s6-overlay_ version.
+* ``UID`` - User ID. The default is ``1000``.
+* ``GID`` - The user's group ID. The default is ``1000``.
+
+.. code-block:: shell
+    
+    $ git clone https://github.com/kyzima-spb/docker-gui.git
+    $ cd docker-gui
+    $ docker build -t gui \
+          --build-arg RELEASE=buster-slim \
+          --build-arg UID=1001 \
+          --build-arg GID=1001 \
+          .
 
 .. _s6-overlay: https://github.com/just-containers/s6-overlay
 .. _execline: https://skarnet.org/software/execline/
+
+1
