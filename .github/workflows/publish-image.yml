@@ -94,4 +94,4 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/chromium:latest
           cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/chromium:buildcache
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/chromium:latest-buildcache,mode=max
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/chromium:buildcache,mode=max
