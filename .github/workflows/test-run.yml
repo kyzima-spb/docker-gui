@@ -17,4 +17,4 @@ jobs:
           - [stretch-slim, [stretch-slim]]
     steps:
       - name: Result
-        run: echo ${{ matrix.release[0] }} ${{ matrix.release[1] }}
+        run: echo ${{ join(matrix.release, 'gui:') }}
