@@ -1,0 +1,19 @@
+name: Test GitHub Actions
+
+on:
+  push:
+    branches: [ actions-test ]
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        release:
+          - bullseye-slim
+          - buster-slim
+          - stretch-slim
+    steps:
+      - name: Result
+        run: echo ${{ matrix.release }}
