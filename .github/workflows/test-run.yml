@@ -11,12 +11,10 @@ jobs:
     strategy:
       matrix:
         release:
-          - [bullseye-slim, tagname]
-          - [buster-slim, tagname]
-          - [stretch-slim, tagname]
-        o:
-          - key1: value2
-          - key2: value2
+          - [bullseye-slim, [latest]]
+          - [bullseye-slim, [bullseye-slim]]
+          - [buster-slim, [buster-slim]]
+          - [stretch-slim, [stretch-slim]]
     steps:
       - name: Result
         run: echo ${{ matrix.release[0] }} ${{ matrix.release[1] }}
