@@ -3,7 +3,7 @@ name: CI to Docker Hub
 on:
   push:
     branches:
-      - dev-master
+      - master
 
 jobs:
   build:
@@ -61,6 +61,13 @@ jobs:
         run: |
           docker buildx imagetools create \
             --tag ghcr.io/${{ github.repository_owner }}/gui:${{ matrix.release[0] }} \
+            ${{ secrets.DOCKER_HUB_USERNAME }}/gui:${{ matrix.release[0] }}
+      -
+        name: Push latest image to GHCR
+        if: ${{ matrix.release[1] }}
+        run: |
+          docker buildx imagetools create \
+            --tag ghcr.io/${{ github.repository_owner }}/gui:latest \
             ${{ secrets.DOCKER_HUB_USERNAME }}/gui:${{ matrix.release[0] }}
       -
         name: Image digest
