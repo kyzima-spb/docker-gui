@@ -20,5 +20,5 @@ jobs:
         run: echo ${{ matrix.release[1] }}
       -
         name: Run if latest
-        if: ${{ ${{ matrix.release[1] }} }}
+        if: ${{ matrix.release[1] }}
         run: echo "Is latest image"
