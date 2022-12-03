@@ -11,12 +11,14 @@ jobs:
     strategy:
       matrix:
         release:
-          - [bullseye-slim, latest]
-          - [bullseye-slim, bullseye-slim]
-          - [buster-slim, buster-slim]
-          - [stretch-slim, stretch-slim]
-        o:
-          - {key: value2}
+          - [bullseye-slim, true]
+          - [buster-slim, false]
+          - [stretch-slim, false]
     steps:
-      - name: Result
-        run: echo ${{ matrix.release[1][0] }}
+      -
+        name: Result
+        run: echo ${{ matrix.release[1] }}
+      -
+        name: Run if latest
+        if: ${{ ${{ matrix.release[1] }} }}
+        run: echo "Is latest image"
