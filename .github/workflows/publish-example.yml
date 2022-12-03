@@ -3,7 +3,9 @@ name: Chromium example
 on:
   push:
     branches: dev-master
-    paths: examples/chromium
+    paths:
+      - examples/chromium
+      - .github/workflows/publish-example.yml
 
 jobs:
   build:
