@@ -11,9 +11,9 @@ jobs:
     strategy:
       matrix:
         release:
-          - bullseye-slim
-          - buster-slim
-          - stretch-slim
+          - [bullseye-slim, tagname]
+          - [buster-slim, tagname]
+          - [stretch-slim, tagname]
     steps:
       - name: Result
         run: echo ${{ matrix.release }}
