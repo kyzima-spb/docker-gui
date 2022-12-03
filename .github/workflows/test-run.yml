@@ -11,10 +11,10 @@ jobs:
     strategy:
       matrix:
         release:
-          - [bullseye-slim, [latest]]
-          - [bullseye-slim, [bullseye-slim]]
-          - [buster-slim, [buster-slim]]
-          - [stretch-slim, [stretch-slim]]
+          - [bullseye-slim, [${{ secrets.DOCKER_HUB_USERNAME }}, latest]]
+          - [bullseye-slim, [${{ secrets.DOCKER_HUB_USERNAME }}, bullseye-slim]]
+          - [buster-slim, [${{ secrets.DOCKER_HUB_USERNAME }}, buster-slim]]
+          - [stretch-slim, [${{ secrets.DOCKER_HUB_USERNAME }}, stretch-slim]]
     steps:
       - name: Result
-        run: echo ${{ join(matrix.release, 'gui:') }}
+        run: echo ${{ matrix.release[1][0] }}
