@@ -88,7 +88,7 @@ Create a new Dockerfile and install the application
 with all required dependencies, for example:
 
 ```dockerfile
-FROM kyzimaspb/bullseye-slim
+FROM kyzimaspb/gui:bullseye-slim
 
 # By default, all services run as a normal user
 # To install, you need to switch to superuser
