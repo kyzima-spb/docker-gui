@@ -23,4 +23,3 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           repository: ${{ secrets.DOCKER_HUB_USERNAME }}/gui
           short-description: ${{ github.event.repository.description }}
-          readme-filepath: ./README.rst
