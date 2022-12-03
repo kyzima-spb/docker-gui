@@ -14,6 +14,9 @@ jobs:
           - [bullseye-slim, tagname]
           - [buster-slim, tagname]
           - [stretch-slim, tagname]
+        o:
+          - key1: value2
+          - key2: value2
     steps:
       - name: Result
-        run: echo ${{ matrix.release }}
+        run: echo ${{ matrix.release[0] }} ${{ matrix.release[1] }}
