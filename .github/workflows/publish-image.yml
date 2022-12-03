@@ -57,5 +57,11 @@ jobs:
             --tag ${{ secrets.DOCKER_HUB_USERNAME }}/gui:latest \
             ${{ secrets.DOCKER_HUB_USERNAME }}/gui:${{ matrix.release[0] }}
       -
+        name: Push image to GHCR
+        run: |
+          docker buildx imagetools create \
+            --tag ghcr.io/${{ github.repository_owner }}/gui:${{ matrix.release[0] }} \
+            ${{ secrets.DOCKER_HUB_USERNAME }}/gui:${{ matrix.release[0] }}
+      -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
