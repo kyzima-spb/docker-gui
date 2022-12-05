@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - README.rst
+      - README.md
       - .github/workflows/dockerhub-description.yml
 
 jobs:
