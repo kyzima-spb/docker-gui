@@ -3,7 +3,9 @@ name: CI to Docker Hub
 on:
   push:
     branches:
-      - dev-master
+      - master
+    paths:
+      - .github/workflows/publish-image.yml
 
 jobs:
   build:
