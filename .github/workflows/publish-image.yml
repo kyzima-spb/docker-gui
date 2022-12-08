@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: "gui"
     strategy:
       matrix:
         release:
@@ -27,8 +29,8 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/gui
-            ghcr.io/${{ github.repository_owner }}/gui
+            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.$IMAGE_NAME }}
+            ghcr.io/${{ github.repository_owner }}/${{ env.$IMAGE_NAME }}
           tags: |
             ${{ matrix.release }}
             ${{ matrix.latest }}
@@ -58,19 +60,21 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/gui:${{ matrix.release }}-buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/gui:${{ matrix.release }}-buildcache,mode=max
+          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.$IMAGE_NAME }}:${{ matrix.release }}-buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.$IMAGE_NAME }}:${{ matrix.release }}-buildcache,mode=max
       -
         name: Delete old versions of images
         uses: vlaurin/action-ghcr-prune@main
         with:
           token: ${{ secrets.PAT }}
           user: ${{ github.repository_owner }}
-          container: "chromium"
+          container: ${{ env.$IMAGE_NAME }}
           untagged: true
   build-example:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: "chromium"
     steps:
       -
         name: Checkout
@@ -81,7 +85,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ghcr.io/${{ github.repository_owner }}/chromium
+            ghcr.io/${{ github.repository_owner }}/${{ env.$IMAGE_NAME }}
           tags: |
             latest
       -
@@ -102,13 +106,13 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/chromium:buildcache
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/chromium:buildcache,mode=max
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/${{ env.$IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/${{ env.$IMAGE_NAME }}:buildcache,mode=max
       - 
         name: Delete old versions of images
         uses: vlaurin/action-ghcr-prune@main
         with:
           token: ${{ secrets.PAT }}
           user: ${{ github.repository_owner }}
-          container: "chromium"
+          container: ${{ env.$IMAGE_NAME }}
           untagged: true
