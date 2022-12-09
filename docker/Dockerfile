@@ -32,11 +32,10 @@ RUN set -ex \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ADD ${S6_DOWNLOAD_URL}/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
-ADD ${S6_DOWNLOAD_URL}/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
+ADD ${S6_DOWNLOAD_URL}/v${S6_OVERLAY_VERSION}/s6-overlay-armhf.tar.xz /tmp
 
 RUN set -ex \
-    && tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz \
-    && tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz \
+    && cat /tmp/s6-overlay-*.tar.xz | tar -C / -Jxpvf - -i \
     && rm /tmp/s6-overlay-*.tar.xz
 
 RUN set -ex \
@@ -61,5 +60,7 @@ RUN set -ex \
             /home/user/.config/openbox/rc.xml \
     && echo "[Settings]\ngtk-theme-name=Numix" > /home/user/.config/gtk-3.0/settings.ini \
     && echo 'gtk-theme-name="Numix"' > /home/user/.gtkrc-2.0
+
+RUN dpkg --print-architecture
 
 ENTRYPOINT ["/init"]
