@@ -88,7 +88,7 @@ Create a new Dockerfile and install the application
 with all required dependencies, for example:
 
 ```dockerfile
-FROM kyzimaspb/gui:bullseye-slim
+FROM kyzimaspb/gui
 
 # By default, all services run as a normal user
 # To install, you need to switch to superuser
@@ -152,7 +152,7 @@ with the password `qwe123` to connect to the VNC server:
 $ docker run -d --name chromium_1 \
     -p 5900:5900 \
     --shm-size 2g \
-    --restart always \
+    --restart unless-stopped \
     -e VNC_SERVER_PASSWORD=qwe123 \
     chromium
 ```
@@ -166,17 +166,55 @@ The source code for the example is available in the
 * `RELEASE` - The release name of the Debian distribution.
   Available values are `stretch-slim`, `buster-slim`, `bullseye-slim`.
   The default is `bullseye-slim`.
+* `UID` - User ID. The default is `1000`.
+* `GID` - The user's group ID. The default is `1000`.
 * `S6_DOWNLOAD_URL` - Download URL for [s6-overlay][1].
   The default is ``https://github.com/just-containers/s6-overlay/releases/download``.
 * `S6_OVERLAY_VERSION` - [s6-overlay][1] version.
-* `UID` - User ID. The default is `1000`.
-* `GID` - The user's group ID. The default is `1000`.
+* `S6_ARCH` - [s6-overlay][1] architecture.
+
+### How to change Debian distribution release?
+
+The `RELEASE` build argument allows you to specify the release of the Debian distribution.
+Available values `stretch-slim`, `buster-slim`, `bullseye-slim`:
 
 ```shell
 $ git clone https://github.com/kyzima-spb/docker-gui.git
-$ cd docker-gui
+$ cd docker-gui/docker
+$ docker build -t gui --build-arg RELEASE=buster-slim .
+```
+
+### How to change s6-overlay version?
+
+```shell
+$ git clone https://github.com/kyzima-spb/docker-gui.git
+$ cd docker-gui/docker
+$ docker build -t gui --build-arg S6_OVERLAY_VERSION=3.1.2.0 .
+```
+
+### How to change s6-overlay architecture?
+
+We clone the sources of the base image,
+specify the architecture in the `S6_ARCH` argument
+and optionally the version in the `S6_OVERLAY_VERSION` argument.
+The available values for the selected version can be found on the [downloads page][3].
+
+Build an image, for example, for Orange Pi:
+
+```shell
+$ git clone https://github.com/kyzima-spb/docker-gui.git
+$ cd docker-gui/docker
+$ docker build -t gui --build-arg S6_ARCH=armhf .
+```
+
+### How to change UID/GID?
+
+We clone the sources of the base image and build it with the values of the identifiers:
+
+```shell
+$ git clone https://github.com/kyzima-spb/docker-gui.git
+$ cd docker-gui/docker
 $ docker build -t gui \
-      --build-arg RELEASE=buster-slim \
       --build-arg UID=1001 \
       --build-arg GID=1001 \
       .
@@ -184,3 +222,4 @@ $ docker build -t gui \
 
 [1]: <https://github.com/just-containers/s6-overlay> "s6-overlay"
 [2]: <https://skarnet.org/software/execline/> "execline"
+[3]: <https://github.com/just-containers/s6-overlay/releases> "releases"

@@ -1,4 +1,4 @@
-FROM kyzimaspb/gui:bullseye-slim
+FROM kyzimaspb/gui
 
 USER root
 
