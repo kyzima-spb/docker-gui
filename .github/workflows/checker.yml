@@ -2,10 +2,15 @@ name: Check and build new Tixati version
 
 on:
   schedule:
-    - cron: '55 * * * *'
+    - cron: '*/5 * * * *'
 
 jobs:
-  check:
+  job1:
+    name: Debug
     runs-on: ubuntu-latest
+
     steps:
-      - run: echo "Cron is work!"
+    - name: Git checkout
+      uses: actions/checkout@v2
+    - name: List files
+      run: ls
