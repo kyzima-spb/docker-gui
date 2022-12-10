@@ -1,0 +1,11 @@
+name: Check and build new Tixati version
+
+on:
+  schedule:
+    - cron: '55 * * * *'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Cron is work!"
