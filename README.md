@@ -88,7 +88,7 @@ Create a new Dockerfile and install the application
 with all required dependencies, for example:
 
 ```dockerfile
-FROM kyzimaspb/gui:bullseye-slim
+FROM kyzimaspb/gui
 
 # By default, all services run as a normal user
 # To install, you need to switch to superuser
@@ -152,7 +152,7 @@ with the password `qwe123` to connect to the VNC server:
 $ docker run -d --name chromium_1 \
     -p 5900:5900 \
     --shm-size 2g \
-    --restart always \
+    --restart unless-stopped \
     -e VNC_SERVER_PASSWORD=qwe123 \
     chromium
 ```
