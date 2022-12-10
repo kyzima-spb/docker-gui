@@ -1,8 +1,10 @@
 name: Check and build new Tixati version
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'
+  # schedule:
+  #   - cron: '*/5 * * * *'
+  branches:
+    - dev-master
 
 jobs:
   job1:
