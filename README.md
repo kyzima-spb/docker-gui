@@ -109,13 +109,13 @@ USER user
 
 ### Build
 
-Build an image file named chromium:
+Build an image file named `chromium`:
 
 ```shell
 $ docker build -t chromium .
 ```
 
-###Run in daemon mode
+### Run in daemon mode
 
 Run the container named `chromium_1` in daemon mode
 and forward the specified ports
@@ -157,31 +157,32 @@ $ docker run -d --name chromium_1 \
     chromium
 ```
 
-The source code for the example is available in the
-`examples/chromium` directory.
+The source code for the example is available in the `examples/chromium` directory.
 
 
 ## Build Arguments
 
 * `RELEASE` - The release name of the Debian distribution.
-  Available values are `stretch-slim`, `buster-slim`, `bullseye-slim`.
+  Available values are `bullseye-slim`, `bullseye`,
+  `buster-slim`, `buster`, `stretch-slim`, `stretch`.
   The default is `bullseye-slim`.
 * `UID` - User ID. The default is `1000`.
 * `GID` - The user's group ID. The default is `1000`.
 * `S6_DOWNLOAD_URL` - Download URL for [s6-overlay][1].
-  The default is ``https://github.com/just-containers/s6-overlay/releases/download``.
+  The default is `https://github.com/just-containers/s6-overlay/releases/download`.
 * `S6_OVERLAY_VERSION` - [s6-overlay][1] version.
+  By default, the latest version.
 * `S6_ARCH` - [s6-overlay][1] architecture.
+  The default is `x86_64`.
 
 ### How to change Debian distribution release?
 
-The `RELEASE` build argument allows you to specify the release of the Debian distribution.
-Available values `stretch-slim`, `buster-slim`, `bullseye-slim`:
+The `RELEASE` build argument allows you to specify the release of the Debian distribution:
 
 ```shell
 $ git clone https://github.com/kyzima-spb/docker-gui.git
 $ cd docker-gui/docker
-$ docker build -t gui --build-arg RELEASE=buster-slim .
+$ docker build -t gui --build-arg RELEASE=bullseye .
 ```
 
 ### How to change s6-overlay version?
