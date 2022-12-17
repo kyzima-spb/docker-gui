@@ -3,7 +3,7 @@ name: CI to Docker Hub
 on:
   push:
     branches:
-      - master
+      - dev-master
     paths:
       - .github/workflows/publish-image.yml
 
@@ -18,9 +18,9 @@ jobs:
           - "bullseye-slim"
           - "buster-slim"
           - "stretch-slim"
-        include:
-          - release: "bullseye-slim"
-          - latest: "latest"
+        # include:
+        #   - release: "bullseye-slim"
+        #   - latest: "latest"
     steps:
       -
         name: Checkout
@@ -35,7 +35,8 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
           tags: |
             ${{ matrix.release }}
-            ${{ matrix.latest }}
+          flavor: |
+            latest=${{ matrix.release == 'bullseye-slim' }}
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
