@@ -60,7 +60,7 @@ async function getLatestRelease(api, owner, repo) {
 
 module.exports = async ({ github, core, owner, repo }) => {
   const latestRelease = await getLatestRelease(github.rest, owner, repo);
-  const latestVersion = latest.tag_name.replace('v', '');
+  const latestVersion = latestRelease.tag_name.replace('v', '');
   const dockerFile = new Dockerfile(
     path.join(rootDir, 'docker', 'Dockerfile2')
   );

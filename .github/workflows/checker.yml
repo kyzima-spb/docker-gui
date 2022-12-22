@@ -31,7 +31,7 @@ jobs:
               repo: 's6-overlay',
             });
       -
-        run: echo ${{ toJSON(steps.result.outputs) }}
+        run: echo ${{ steps.result.outputs }}
 
 
       -
