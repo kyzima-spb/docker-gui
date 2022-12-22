@@ -1,0 +1,51 @@
+name: Check the new version of s6-overlay and upgrade
+
+on:
+  schedule:
+    - cron: '45 5 * * *'
+  push:
+    paths:
+      - .github/workflows/check-and-upgrade.yml
+      - scripts/**
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    env:
+      VERSION_PATTERN: (ARG\s+S6_OVERLAY_VERSION)=(\"|')(.+)\2
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Check and upgrade
+        id: result
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const upgrade = require('./scripts/upgrade.js')
+            await upgrade({
+              github,
+              core,
+              owner: 'just-containers',
+              repo: 's6-overlay',
+            });
+      -
+        name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        if: ${{ fromJSON(steps.result.outputs.updated) }}
+        env:
+          MESSAGE: >
+            Bump s6-overlay
+            from ${{ steps.result.outputs.build_version }}
+            to ${{ steps.result.outputs.latest_version }}
+        with:
+          branch: checker/latest-version
+          delete-branch: true
+          title: ${{ env.MESSAGE }}
+          commit-message: ${{ env.MESSAGE }}
+          labels: |
+            automated pr
+          body: |
+            ${{ fromJSON(steps.result.outputs.latest_release.body) }}
+            ${{ fromJSON(steps.result.outputs.latest_release.url) }}
