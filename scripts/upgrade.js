@@ -62,7 +62,7 @@ module.exports = async ({ github, core, owner, repo }) => {
   const latestRelease = await getLatestRelease(github.rest, owner, repo);
   const latestVersion = latestRelease.tag_name.replace('v', '');
   const dockerFile = new Dockerfile(
-    path.join(rootDir, 'docker', 'Dockerfile2')
+    path.join(rootDir, 'docker', 'Dockerfile')
   );
   const currentVersion = await dockerFile.getVersion();
   
