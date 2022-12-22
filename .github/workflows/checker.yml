@@ -1,4 +1,4 @@
-name: Check and build new s6 version
+name: Check the new version of s6-overlay and upgrade
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   push:
     paths:
       - .github/workflows/checker.yml
-      - scripts/getLatestVersion.js
+      - scripts/**
 
 jobs:
   setup:
@@ -17,6 +17,23 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v3
+      -
+        name: Check and upgrade
+        id: result
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const upgrade = require('./scripts/upgrade.js')
+            await upgrade({
+              github,
+              core,
+              owner: 'just-containers',
+              repo: 's6-overlay',
+            });
+      -
+        run: echo ${{ toJSON(steps.result.outputs) }}
+
+
       -
         name: Get current version
         id: curver
