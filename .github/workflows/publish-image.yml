@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - .github/workflows/publish-image.yml
+      - docker/**
 
 env:
   IMAGE_NAME: "gui"
