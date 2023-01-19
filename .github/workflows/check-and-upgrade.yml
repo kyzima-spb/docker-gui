@@ -47,5 +47,5 @@ jobs:
           labels: |
             automated pr
           body: |
-            ${{ fromJSON(steps.result.outputs.latest_release.body) }}
-            ${{ fromJSON(steps.result.outputs.latest_release.url) }}
+            ${{ fromJSON(steps.result.outputs.latest_release).body }}
+            ${{ fromJSON(steps.result.outputs.latest_release).url }}
