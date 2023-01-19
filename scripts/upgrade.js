@@ -66,8 +66,9 @@ module.exports = async ({ github, core, owner, repo }) => {
   );
   const currentVersion = await dockerFile.getVersion();
   
-  console.info(`The latest version of s6-overlay on the site: ${latestVersion}`);
-  console.info(`Latest version of Tixati to build: ${currentVersion}`);
+  console.log('The latest release', latestRelease);
+  console.info(`The latest version of s6-overlay on the repository: ${latestVersion}`);
+  console.info(`Latest version of s6-overlay to build: ${currentVersion}`);
   
   if (latestVersion > currentVersion) {
     await dockerFile.update(latestVersion);
