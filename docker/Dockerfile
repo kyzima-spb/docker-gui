@@ -37,7 +37,7 @@ RUN set -ex \
     && useradd -u $UID -g $GID -s /bin/bash -m user
 
 ARG S6_DOWNLOAD_URL="https://github.com/just-containers/s6-overlay/releases/download"
-ARG S6_OVERLAY_VERSION="3.1.4.1"
+ARG S6_OVERLAY_VERSION="3.1.4.2"
 ARG S6_ARCH="x86_64"
 ADD ${S6_DOWNLOAD_URL}/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
 ADD ${S6_DOWNLOAD_URL}/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz /tmp
