@@ -1,4 +1,4 @@
-name: CI to Docker Hub
+name: Build and publish images
 
 on:
   push:
@@ -18,9 +18,9 @@ jobs:
     strategy:
       matrix:
         release:
+          - "bookworm-slim"
           - "bullseye-slim"
           - "buster-slim"
-          - "stretch-slim"
     steps:
       -
         name: Checkout
@@ -36,7 +36,7 @@ jobs:
           tags: |
             ${{ matrix.release }}
           flavor: |
-            latest=${{ matrix.release == 'bullseye-slim' }}
+            latest=${{ matrix.release == 'bookworm-slim' }}
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2

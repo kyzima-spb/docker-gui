@@ -7,6 +7,6 @@
     <menu
       id="root-menu"
       label="Applications"
-      execute="openbox-menu -i lxde-applications.menu"
+      execute="/usr/bin/obamenu"
     />
 </openbox_menu>

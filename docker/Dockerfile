@@ -1,4 +1,4 @@
-ARG RELEASE=bullseye-slim
+ARG RELEASE=bookworm-slim
 
 FROM debian:$RELEASE
 
@@ -13,16 +13,19 @@ ENV DISPLAY :99
 ENV VNC_SERVER_PASSWORD ""
 
 RUN set -ex \
+    && . /etc/os-release \
     && apt update \
-    && apt-get install -yq --no-install-recommends \
+    && apt install -yq --no-install-recommends \
         locales \
         xz-utils \
         xvfb \
         openbox \
-        openbox-menu \
         x11vnc \
         numix-gtk-theme \
         xmlstarlet \
+    && if [ "$VERSION_CODENAME" = 'buster' ]; then \
+          apt install -yq --no-install-recommends python; \
+       fi \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
