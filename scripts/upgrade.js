@@ -41,20 +41,8 @@ class Dockerfile {
 
 async function getLatestRelease(api, owner, repo) {
   // Returns the latest release from the GitHub repository.
-  const resp = await api.repos.listReleases({owner, repo});
-  const data = resp.data;
-  
-  data.sort((a, b) => {
-    if (a.tag_name < b.tag_name) {
-      return 1;
-    }
-    if (a.tag_name > b.tag_name) {
-      return -1;
-    }
-    return 0;
-  })
-  
-  return data[0];
+  const resp = await api.repos.getLatestRelease({owner, repo});
+  return resp.data;
 }
 
 
