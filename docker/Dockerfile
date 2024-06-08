@@ -45,9 +45,7 @@ ARG S6_ARCH="x86_64"
 ADD ${S6_DOWNLOAD_URL}/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
 ADD ${S6_DOWNLOAD_URL}/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz /tmp
 
-RUN set -ex \
-    && cat /tmp/s6-overlay-*.tar.xz | tar -C / -Jxpf - -i \
-    && rm /tmp/s6-overlay-*.tar.xz
+RUN find /tmp -name "s6-overlay-*.tar.xz" -exec tar -C / -Jxpf {} \; -delete
 
 COPY ./root /
 
