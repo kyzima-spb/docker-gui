@@ -94,14 +94,15 @@ FROM kyzimaspb/gui
 # To install, you need to switch to superuser
 USER root
 
-RUN set -x \
-    && apt update \
-    && apt install -yq --no-install-recommends chromium \
-    && apt-get clean  \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    rm -f /etc/apt/apt.conf.d/docker-clean; \
+    echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
+    && apt update && apt install -yq --no-install-recommends \
+        chromium
 
 # Directory containing the description of the service
-COPY ./root /
+COPY ./ /
 
 # We return the launch as a normal user
 USER user
@@ -112,7 +113,7 @@ USER user
 Build an image file named `chromium`:
 
 ```shell
-$ docker build -t chromium .
+$ docker build -t chromium -f Dockerfile ./root
 ```
 
 ### Run in daemon mode
@@ -166,8 +167,6 @@ The source code for the example is available in the `examples/chromium` director
   Available values are `bullseye-slim`, `bullseye`,
   `buster-slim`, `buster`, `stretch-slim`, `stretch`.
   The default is `bullseye-slim`.
-* `UID` - User ID. The default is `1000`.
-* `GID` - The user's group ID. The default is `1000`.
 * `S6_DOWNLOAD_URL` - Download URL for [s6-overlay][1].
   The default is `https://github.com/just-containers/s6-overlay/releases/download`.
 * `S6_OVERLAY_VERSION` - [s6-overlay][1] version.
@@ -206,19 +205,6 @@ Build an image, for example, for Orange Pi:
 $ git clone https://github.com/kyzima-spb/docker-gui.git
 $ cd docker-gui/docker
 $ docker build -t gui --build-arg S6_ARCH=armhf .
-```
-
-### How to change UID/GID?
-
-We clone the sources of the base image and build it with the values of the identifiers:
-
-```shell
-$ git clone https://github.com/kyzima-spb/docker-gui.git
-$ cd docker-gui/docker
-$ docker build -t gui \
-      --build-arg UID=1001 \
-      --build-arg GID=1001 \
-      .
 ```
 
 [1]: <https://github.com/just-containers/s6-overlay> "s6-overlay"
