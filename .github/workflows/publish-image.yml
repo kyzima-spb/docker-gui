@@ -4,13 +4,10 @@ on:
   push:
     branches:
       - master
+      - dev-master
     paths:
       - .github/workflows/publish-image.yml
       - docker/**
-
-env:
-  IMAGE_NAME: "gui"
-  EXAMPLE_IMAGE_NAME: "chromium"
 
 jobs:
   build:
@@ -21,22 +18,34 @@ jobs:
           - "bookworm-slim"
           - "bullseye-slim"
           - "buster-slim"
+        include:
+          - latest: false
+          - latest: true
+            release: "bookworm-slim"
     steps:
       -
         name: Checkout
         uses: actions/checkout@v4
       -
+        name: Set GHCR_PACKAGE_NAME environment variable
+        run: |
+          name="$(echo ${{ vars.IMAGE_NAME }} | awk -F/ '{ print $2 }')"
+          echo "GHCR_PACKAGE_NAME=$name" >> $GITHUB_ENV
+      -
         name: Docker meta
-        id: meta
         uses: docker/metadata-action@v5
+        id: meta
         with:
           images: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}
-            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
+            ${{ vars.IMAGE_NAME }}
+            ghcr.io/${{ github.repository_owner }}/${{ env.GHCR_PACKAGE_NAME }}
           tags: |
             ${{ matrix.release }}
           flavor: |
-            latest=${{ matrix.release == 'bookworm-slim' }}
+            latest=${{ matrix.latest }}      
+      -
+        name: Set CACHE_IMAGE environment variable
+        run: echo "CACHE_IMAGE=${{ vars.IMAGE_NAME }}:buildcache-${{ steps.meta.outputs.version }}" >> $GITHUB_ENV
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -54,33 +63,43 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
+        if: ${{ github.ref_name == 'master' }}
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ./docker
+          context: ./docker/root
+          file: ./docker/Dockerfile
           build-args: |
             RELEASE=${{ matrix.release }}
-          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/buildcache:${{ env.IMAGE_NAME }}-${{ matrix.release }}
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/buildcache:${{ env.IMAGE_NAME }}-${{ matrix.release }},mode=max
-  remove-old-versions:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
+          annotations: ${{ steps.meta.outputs.annotations }}
+          cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
+          cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
+          push: true
       -
         name: Delete old versions of images
         uses: vlaurin/action-ghcr-prune@main
         with:
           token: ${{ secrets.PAT }}
           user: ${{ github.repository_owner }}
-          container: ${{ env.IMAGE_NAME }}
+          container: ${{ env.GHCR_PACKAGE_NAME }}
           untagged: true
+
   build-example:
+    if: ${{ github.ref_name == 'master' }}
     needs: build
     runs-on: ubuntu-latest
     steps:
+      -
+        name: Set environment variables
+        run: |
+          GHCR_PACKAGE_NAME=chromium
+          IMAGE_NAME="ghcr.io/${{ github.repository_owner }}/$GHCR_PACKAGE_NAME"
+
+          echo "GHCR_PACKAGE_NAME=$GHCR_PACKAGE_NAME" >> $GITHUB_ENV
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+          echo "CACHE_IMAGE="$IMAGE_NAME:buildcache" >> $GITHUB_ENV
       -
         name: Checkout
         uses: actions/checkout@v4
@@ -90,7 +109,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/${{ github.repository_owner }}/${{ env.EXAMPLE_IMAGE_NAME }}
+            ${{ env.IMAGE_NAME }}
           tags: |
             latest
       -
@@ -107,17 +126,19 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ./examples/chromium
-          push: true
+          context: ./examples/chromium/root
+          file: ./examples/chromium/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/${{ env.EXAMPLE_IMAGE_NAME }}:buildcache
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/${{ env.EXAMPLE_IMAGE_NAME }}:buildcache,mode=max
+          annotations: ${{ steps.meta.outputs.annotations }}
+          cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
+          cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
+          push: true
       - 
         name: Delete old versions of images
         uses: vlaurin/action-ghcr-prune@main
         with:
           token: ${{ secrets.PAT }}
           user: ${{ github.repository_owner }}
-          container: ${{ env.EXAMPLE_IMAGE_NAME }}
+          container: ${{ env.GHCR_PACKAGE_NAME }}
           untagged: true
