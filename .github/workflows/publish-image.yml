@@ -99,7 +99,7 @@ jobs:
 
           echo "GHCR_PACKAGE_NAME=$GHCR_PACKAGE_NAME" >> $GITHUB_ENV
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
-          echo "CACHE_IMAGE="$IMAGE_NAME:buildcache" >> $GITHUB_ENV
+          echo "CACHE_IMAGE=$IMAGE_NAME:buildcache" >> $GITHUB_ENV
       -
         name: Checkout
         uses: actions/checkout@v4
