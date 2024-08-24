@@ -27,18 +27,13 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
-        name: Set GHCR_PACKAGE_NAME environment variable
-        run: |
-          name="$(echo ${{ vars.IMAGE_NAME }} | awk -F/ '{ print $2 }')"
-          echo "GHCR_PACKAGE_NAME=$name" >> $GITHUB_ENV
-      -
         name: Docker meta
         uses: docker/metadata-action@v5
         id: meta
         with:
           images: |
             ${{ vars.IMAGE_NAME }}
-            ghcr.io/${{ github.repository_owner }}/${{ env.GHCR_PACKAGE_NAME }}
+            ghcr.io/${{ github.repository_owner }}/${{ vars.GHCR_PACKAGE_NAME }}
           tags: |
             ${{ matrix.release }}
           flavor: |
@@ -77,13 +72,18 @@ jobs:
           cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
           cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
           push: true
+
+  delete-untagged:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
       -
-        name: Delete old versions of images
+        name: Deletes all untagged image versions
         uses: vlaurin/action-ghcr-prune@main
         with:
           token: ${{ secrets.PAT }}
           user: ${{ github.repository_owner }}
-          container: ${{ env.GHCR_PACKAGE_NAME }}
+          container: ${{ vars.GHCR_PACKAGE_NAME }}
           untagged: true
 
   build-example:
