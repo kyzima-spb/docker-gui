@@ -1,0 +1,7 @@
+{
+  "release": ["bookworm-slim", "bullseye-slim", "buster-slim"],
+  "include": [
+    {"latest": false},
+    {"latest": true, "release": "bookworm-slim"}
+  ]
+}

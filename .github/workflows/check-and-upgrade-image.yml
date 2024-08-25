@@ -1,0 +1,29 @@
+name: Check if the base Docker image has changed and then rebuild it
+
+on:
+  schedule:
+    - cron: '45 5 * * *'
+  push:
+    branches:
+      - master
+      - dev-master
+    paths:
+      - .github/workflows/run-upgrade-image.yml
+      - .github/workflows/upgrade-image.yml
+
+jobs:
+  setup:
+    uses: ./.github/workflows/read-matrix.yml
+    with:
+      path: ./.github/matrix.json
+
+  run:
+    needs: setup
+    strategy:
+      matrix: ${{ fromJSON(needs.setup.outputs.matrix) }}
+    uses: ./.github/workflows/upgrade-image.yml
+    with:
+      image: ${{ vars.IMAGE_NAME }}
+      release: ${{ matrix.release }}
+      latest: ${{ matrix.latest }}
+    secrets: inherit
