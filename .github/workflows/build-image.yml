@@ -24,12 +24,10 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
-        name: Set GHCR_CONTAINER and GHCR_IMAGE environment variables
+        name: Set GHCR_IMAGE environment variable
         env:
           IMAGE: ${{ inputs.image }}
-        run: |
-          echo "GHCR_CONTAINER=${IMAGE##*/}" >> $GITHUB_ENV
-          echo "GHCR_IMAGE=ghcr.io/$GITHUB_REPOSITORY_OWNER/${IMAGE##*/}" >> $GITHUB_ENV
+        run: echo "GHCR_IMAGE=ghcr.io/$GITHUB_REPOSITORY_OWNER/${IMAGE##*/}" >> $GITHUB_ENV
       -
         name: Docker meta
         uses: docker/metadata-action@v5
@@ -83,10 +81,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: Set GHCR_IMAGE environment variable
+        name: Set GHCR_CONTAINER environment variable
         env:
           IMAGE: ${{ inputs.image }}
-        run: echo "GHCR_IMAGE=ghcr.io/$GITHUB_REPOSITORY_OWNER/${IMAGE##*/}" >> $GITHUB_ENV
+        run: echo "GHCR_CONTAINER=${IMAGE##*/}" >> $GITHUB_ENV
       -
         continue-on-error: true
         name: Deletes all untagged image versions
