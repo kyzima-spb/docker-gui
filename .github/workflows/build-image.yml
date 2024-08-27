@@ -24,10 +24,12 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
-        name: Set GHCR_IMAGE environment variable
+        name: Set GHCR_CONTAINER and GHCR_IMAGE environment variables
         env:
           IMAGE: ${{ inputs.image }}
-        run: echo "GHCR_IMAGE=ghcr.io/$GITHUB_REPOSITORY_OWNER/${IMAGE##*/}" >> $GITHUB_ENV
+        run: |
+          echo "GHCR_CONTAINER=${IMAGE##*/}" >> $GITHUB_ENV
+          echo "GHCR_IMAGE=ghcr.io/$GITHUB_REPOSITORY_OWNER/${IMAGE##*/}" >> $GITHUB_ENV
       -
         name: Docker meta
         uses: docker/metadata-action@v5
@@ -92,5 +94,5 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           user: ${{ github.repository_owner }}
-          container: ${{ env.GHCR_IMAGE }}
+          container: ${{ env.GHCR_CONTAINER }}
           untagged: true
