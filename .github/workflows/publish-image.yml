@@ -8,6 +8,7 @@ on:
     paths:
       - .github/workflows/publish-image.yml
       - .github/workflows/build-image.yml
+      - .github/matrix.json
       - 'docker/**'
 
 jobs:
@@ -27,60 +28,3 @@ jobs:
       latest: ${{ matrix.latest }}
       push: ${{ github.ref_name == 'master' }}
     secrets: inherit
-
-  # build-example:
-  #   if: ${{ github.ref_name == 'master' }}
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     -
-  #       name: Set environment variables
-  #       run: |
-  #         GHCR_PACKAGE_NAME=chromium
-  #         IMAGE_NAME="ghcr.io/${{ github.repository_owner }}/$GHCR_PACKAGE_NAME"
-
-  #         echo "GHCR_PACKAGE_NAME=$GHCR_PACKAGE_NAME" >> $GITHUB_ENV
-  #         echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
-  #         echo "CACHE_IMAGE=$IMAGE_NAME:buildcache" >> $GITHUB_ENV
-  #     -
-  #       name: Checkout
-  #       uses: actions/checkout@v4
-  #     -
-  #       name: Docker meta
-  #       id: meta
-  #       uses: docker/metadata-action@v5
-  #       with:
-  #         images: |
-  #           ${{ env.IMAGE_NAME }}
-  #         tags: |
-  #           latest
-  #     -
-  #       name: Login to GitHub Container Registry
-  #       uses: docker/login-action@v3
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{ github.repository_owner }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
-  #     -
-  #       name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v3
-  #     -
-  #       name: Build and push
-  #       uses: docker/build-push-action@v6
-  #       with:
-  #         context: ./examples/chromium/root
-  #         file: ./examples/chromium/Dockerfile
-  #         tags: ${{ steps.meta.outputs.tags }}
-  #         labels: ${{ steps.meta.outputs.labels }}
-  #         annotations: ${{ steps.meta.outputs.annotations }}
-  #         cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
-  #         cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
-  #         push: true
-  #     - 
-  #       name: Delete old versions of images
-  #       uses: vlaurin/action-ghcr-prune@main
-  #       with:
-  #         token: ${{ secrets.PAT }}
-  #         user: ${{ github.repository_owner }}
-  #         container: ${{ env.GHCR_PACKAGE_NAME }}
-  #         untagged: true
