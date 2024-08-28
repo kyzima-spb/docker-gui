@@ -29,17 +29,11 @@ jobs:
           run: echo "version=$(grep -oP '(?<=S6_OVERLAY_VERSION=")[^"]+' Dockerfile)" >> $GITHUB_OUTPUT
       -
         name: Get latest release
-        uses: actions/github-script@v7
+        uses: kyzima-spb/gh-actions/.github/actions/latest-release@master
         id: latest
         with:
-          retries: 3
-          script: |
-            const { data } = await github.rest.repos.getLatestRelease({
-              owner: 'just-containers',
-              repo: 's6-overlay',
-            });
-            core.setOutput('version', data.tag_name.replace('v', ''));
-            core.setOutput('description', `${data.body}\n${data.url}`);
+          owner: 'just-containers'
+          repo: 's6-overlay'
 
   upgrade:
     needs: check
