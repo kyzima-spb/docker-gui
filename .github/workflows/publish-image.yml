@@ -12,7 +12,7 @@ on:
 
 jobs:
   setup:
-    uses: ./.github/workflows/read-matrix.yml
+    uses: kyzima-spb/gh-actions/.github/workflows/read-matrix.yml@master
     with:
       path: ./.github/matrix.json
 
