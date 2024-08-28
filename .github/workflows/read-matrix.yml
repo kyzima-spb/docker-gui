@@ -20,6 +20,4 @@ jobs:
       -
         name: Read matrix from json file
         id: read
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: ${{ inputs.path }}
+        run: echo "content=$(tr -d '\n' < ${{ inputs.path }})" >> $GITHUB_OUTPUT
