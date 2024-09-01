@@ -34,11 +34,10 @@ EXPOSE 5900
 WORKDIR /tmp
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV HOME=/tmp
 ENV DISPLAY=":99"
 ENV VNC_SERVER_PASSWORD=""
 
-RUN useradd -s /usr/sbin/nologin user \
+RUN useradd -m user -s /bin/bash \
     && mkdir .X11-unix && chmod 1777 .X11-unix
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -59,7 +58,5 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 COPY --from=download /s6 /
 COPY ./ /
-
-USER user
 
 ENTRYPOINT ["/init"]

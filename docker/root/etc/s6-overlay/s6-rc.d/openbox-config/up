@@ -2,21 +2,8 @@
 
 with-contenv
 
-importas -u home_dir HOME
-
-multisubstitute
-{
-    define openbox_config_file ${home_dir}/.config/openbox/rc.xml
-    define gtk3_settings_file ${home_dir}/.config/gtk-3.0/settings.ini
-    define gtk2_settings_file ${home_dir}/.gtkrc-2.0
-}
-
 if {
-    mkdir -p ${home_dir}/.config/gtk-3.0 ${home_dir}/.config/openbox
-}
-
-if {
-    redirfd -w 1 ${openbox_config_file} xmlstarlet ed \
+    xmlstarlet ed -L \
         -N o="http://openbox.org/3.4/rc" \
         -u /o:openbox_config/o:theme/o:name -v Numix \
         -u /o:openbox_config/o:desktops/o:number -v 1 \
@@ -24,7 +11,7 @@ if {
 }
 
 foreground {
-    redirfd -w 1 ${gtk3_settings_file} s6-echo "[Settings]\ngtk-theme-name=Numix"
+    redirfd -a 1 /etc/gtk-3.0/settings.ini s6-echo "\n[Settings]\ngtk-theme-name=Numix"
 }
 
-redirfd -w 1 ${gtk2_settings_file} s6-echo "gtk-theme-name=\"Numix\""
+redirfd -a 1 /etc/gtk-2.0/gtkrc s6-echo "\ngtk-theme-name=\"Numix\""

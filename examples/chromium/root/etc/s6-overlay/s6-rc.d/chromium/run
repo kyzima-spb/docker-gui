@@ -4,4 +4,6 @@ with-contenv
 
 redirfd -w 2 /dev/null
 
-chromium --no-sandbox --start-maximized
+s6-env HOME=/home/user
+
+s6-setuidgid user chromium --no-sandbox --start-maximized

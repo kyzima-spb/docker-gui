@@ -2,6 +2,8 @@
 
 with-contenv
 
-redirfd -w 2 /dev/null
+# redirfd -w 2 /dev/null
 
-/usr/bin/openbox-session
+s6-env HOME=/home/user
+
+s6-setuidgid user /usr/bin/openbox-session

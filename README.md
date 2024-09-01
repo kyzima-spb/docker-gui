@@ -11,6 +11,18 @@ or on the current OS.
 
 ---
 
+- [How to create a new image?](#how-to-create-a-new-image)
+  - [Create image directory](#create-image-directory)
+  - [Create service](#create-service)
+  - [Dockerfile](#dockerfile)
+  - [Build](#build)
+  - [Run in daemon mode](#run-in-daemon-mode)
+- [Environment Variables](#environment-variables)
+  - [Autostart with a password](#autostart-with-a-password)
+- [Build Arguments](#build-arguments)
+  - [How to change Debian distribution release?](#how-to-change-debian-distribution-release)
+  - [How to change s6-overlay version?](#how-to-change-s6-overlay-version)
+  - [How to change s6-overlay architecture?](#how-to-change-s6-overlay-architecture)
 
 ## How to create a new image?
 
@@ -60,7 +72,9 @@ with-contenv
 
 redirfd -w 2 /dev/null
 
-chromium --no-sandbox --start-maximized
+s6-env HOME=/home/user
+
+s6-setuidgid user chromium --no-sandbox --start-maximized
 ```
 
 In the `./root/etc/s6-overlay/s6-rc.d/chromium/type` file,
@@ -90,10 +104,6 @@ with all required dependencies, for example:
 ```dockerfile
 FROM kyzimaspb/gui
 
-# By default, all services run as a normal user
-# To install, you need to switch to superuser
-USER root
-
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     rm -f /etc/apt/apt.conf.d/docker-clean; \
@@ -101,11 +111,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     && apt update && apt install -yq --no-install-recommends \
         chromium
 
-# Directory containing the description of the service
 COPY ./ /
-
-# We return the launch as a normal user
-USER user
 ```
 
 ### Build
@@ -123,10 +129,10 @@ and forward the specified ports
 to the specified ports of the host machine:
 
 ```shell
-$ docker run -d --name chromium_1 \
-      -p 5900:5900 \
-      --shm-size 2g \
-      chromium
+docker run -d --name chromium_1 \
+    -p 5900:5900 \
+    --shm-size 2g \
+    chromium
 ```
 
 Forwarded ports:
@@ -150,7 +156,7 @@ Automatically start the container at system startup
 with the password `qwe123` to connect to the VNC server:
 
 ```shell  
-$ docker run -d --name chromium_1 \
+docker run -d --name chromium_1 \
     -p 5900:5900 \
     --shm-size 2g \
     --restart unless-stopped \
@@ -181,7 +187,9 @@ The `RELEASE` build argument allows you to specify the release of the Debian dis
 ```shell
 $ git clone https://github.com/kyzima-spb/docker-gui.git
 $ cd docker-gui/docker
-$ docker build -t gui --build-arg RELEASE=bullseye .
+$ docker build -t gui \
+    --build-arg RELEASE=bullseye \
+    -f Dockerfile ./root
 ```
 
 ### How to change s6-overlay version?
@@ -189,7 +197,9 @@ $ docker build -t gui --build-arg RELEASE=bullseye .
 ```shell
 $ git clone https://github.com/kyzima-spb/docker-gui.git
 $ cd docker-gui/docker
-$ docker build -t gui --build-arg S6_OVERLAY_VERSION=3.1.2.0 .
+$ docker build -t gui \
+    --build-arg S6_OVERLAY_VERSION=3.1.2.0 \
+    -f Dockerfile ./root
 ```
 
 ### How to change s6-overlay architecture?
@@ -204,7 +214,9 @@ Build an image, for example, for Orange Pi:
 ```shell
 $ git clone https://github.com/kyzima-spb/docker-gui.git
 $ cd docker-gui/docker
-$ docker build -t gui --build-arg S6_ARCH=armhf .
+$ docker build -t gui \
+    --build-arg S6_ARCH=armhf .
+    -f Dockerfile ./root
 ```
 
 [1]: <https://github.com/just-containers/s6-overlay> "s6-overlay"

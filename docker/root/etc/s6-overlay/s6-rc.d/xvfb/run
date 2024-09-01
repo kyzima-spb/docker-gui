@@ -8,4 +8,4 @@ multisubstitute
     importas -D "1280x720x24" resolution XVFB_RESOLUTION
 }
 
-/usr/bin/Xvfb "$DISPLAY" -screen 0 "$resolution" -ac -noreset -nolisten tcp
+s6-setuidgid user /usr/bin/Xvfb "$DISPLAY" -screen 0 "$resolution" -ac -noreset -nolisten tcp
