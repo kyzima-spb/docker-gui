@@ -147,8 +147,11 @@ $ docker stop chromium_1
 
 ## Environment Variables
 
-* `XVFB_RESOLUTION` - screen resolution of the virtual X server;
-* `VNC_SERVER_PASSWORD` - the password for the VNC server.
+* `XVFB_RESOLUTION` - screen resolution of the virtual X server, by default `1280x720`
+* `VNC_SERVER_PASSWORD` - password for the VNC server, by default not set
+* `VNC_SERVER_PASSWORD_FILE` - password for the VNC server, by default not set
+* `USER_UID` - user ID, by default is `1000`
+* `USER_GID` - user's group ID, by default is `1000`
 
 ### Autostart with a password
 

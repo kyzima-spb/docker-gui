@@ -2,17 +2,18 @@
 
 with-contenv
 
+backtick -E HOME { homeof user }
+s6-env HOME="$HOME"
+
 multisubstitute
 {
     importas DISPLAY DISPLAY
-    define password_file "/home/user/.vncpswd"
+    define password_file "${HOME}/.vncpswd"
 }
 
 ifthenelse -s { test -s "$password_file" }
 { define -s password_arg "-rfbauth ${password_file}" }
 { define -s password_arg "-nopw" }
-
-s6-env HOME=/home/user
 
 # redirfd -w 2 /dev/null
 

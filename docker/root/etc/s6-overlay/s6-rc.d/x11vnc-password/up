@@ -2,11 +2,9 @@
 
 with-contenv
 
-multisubstitute
-{
-    importas -u password VNC_SERVER_PASSWORD
-    define password_file "/home/user/.vncpswd"
-}
+backtick -E HOME { homeof user }
+backtick -E password { read-secret VNC_SERVER_PASSWORD "" }
+define password_file "${HOME}/.vncpswd"
 
 ifthenelse { test -z "$password" }
 {
@@ -15,5 +13,5 @@ ifthenelse { test -z "$password" }
 {
     execline-umask 600
     redirfd -w 2 /dev/null
-    if { /usr/bin/x11vnc -storepasswd "$password" "$password_file" }
+    if { s6-setuidgid user /usr/bin/x11vnc -storepasswd "$password" "$password_file" }
 }

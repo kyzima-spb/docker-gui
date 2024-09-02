@@ -22,6 +22,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 RUN find /tmp -name "s6-overlay-*.tar.xz" -exec tar -Jxpf {} \; -delete
 
+COPY --from=kyzimaspb/useful /apps/secrets/secrets.sh usr/local/bin/read-secret
+
+COPY --from=kyzimaspb/useful /apps/switch-user/switch-user.sh usr/local/share/
+
 
 FROM debian:$RELEASE
 
@@ -36,6 +40,8 @@ WORKDIR /tmp
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=":99"
 ENV VNC_SERVER_PASSWORD=""
+ENV USER_UID=1000
+ENV USER_GID=1000
 
 RUN useradd -m user -s /bin/bash \
     && mkdir .X11-unix && chmod 1777 .X11-unix
