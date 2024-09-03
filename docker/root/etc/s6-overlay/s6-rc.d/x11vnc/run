@@ -15,6 +15,6 @@ ifthenelse -s { test -s "$password_file" }
 { define -s password_arg "-rfbauth ${password_file}" }
 { define -s password_arg "-nopw" }
 
-# redirfd -w 2 /dev/null
+redirfd -w 2 /dev/null
 
 s6-setuidgid user /usr/bin/x11vnc -q -display "$DISPLAY" "$password_arg" -forever -listen 0.0.0.0 -xkb -many

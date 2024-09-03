@@ -7,4 +7,5 @@ s6-env HOME="$HOME"
 
 # redirfd -w 2 /dev/null
 
-s6-setuidgid user /usr/bin/openbox-session
+s6-setuidgid user /usr/bin/openbox
+# s6-setuidgid user /usr/bin/openbox-session
