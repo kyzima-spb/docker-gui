@@ -1,0 +1,16 @@
+secrets:
+  vnc_password:
+    file: ./secrets/vnc_password
+
+services:
+  chromium:
+    build:
+      context: ./root
+      dockerfile: ../Dockerfile
+    secrets:
+      - vnc_password
+    ports:
+      - "5900:5900"
+    environment:
+      VNC_SERVER_PASSWORD_FILE: /run/secrets/vnc_password
+    restart: unless-stopped

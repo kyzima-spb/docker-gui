@@ -19,6 +19,7 @@ or on the current OS.
   - [Run in daemon mode](#run-in-daemon-mode)
 - [Environment Variables](#environment-variables)
   - [Autostart with a password](#autostart-with-a-password)
+  - [How to change user or group ID?](#how-to-change-user-or-group-id)
 - [Build Arguments](#build-arguments)
   - [How to change Debian distribution release?](#how-to-change-debian-distribution-release)
   - [How to change s6-overlay version?](#how-to-change-s6-overlay-version)
@@ -70,9 +71,10 @@ It is recommended to use the [execline][2] language:
 
 with-contenv
 
-redirfd -w 2 /dev/null
+backtick -E HOME { homeof user }
+s6-env HOME="$HOME"
 
-s6-env HOME=/home/user
+redirfd -w 2 /dev/null
 
 s6-setuidgid user chromium --no-sandbox --start-maximized
 ```
@@ -129,10 +131,10 @@ and forward the specified ports
 to the specified ports of the host machine:
 
 ```shell
-docker run -d --name chromium_1 \
-    -p 5900:5900 \
-    --shm-size 2g \
-    chromium
+$ docker run -d --name chromium_1 \
+      -p 5900:5900 \
+      --shm-size 2g \
+      chromium
 ```
 
 Forwarded ports:
@@ -158,13 +160,53 @@ $ docker stop chromium_1
 Automatically start the container at system startup
 with the password `qwe123` to connect to the VNC server:
 
-```shell  
-docker run -d --name chromium_1 \
-    -p 5900:5900 \
-    --shm-size 2g \
-    --restart unless-stopped \
-    -e VNC_SERVER_PASSWORD=qwe123 \
-    chromium
+```shell
+$ docker run -d --name chromium_1 \
+      -p 5900:5900 \
+      --shm-size 2g \
+      -e VNC_SERVER_PASSWORD=qwe123 \
+      --restart unless-stopped \
+      chromium
+```
+
+Example with secrets in Docker Compose:
+
+```yml
+secrets:
+  vnc_password:
+    file: ./secrets/vnc_password
+
+services:
+  chromium:
+    build:
+      context: ./root
+      dockerfile: ../Dockerfile
+    secrets:
+      - vnc_password
+    ports:
+      - "5900:5900"
+    environment:
+      VNC_SERVER_PASSWORD_FILE: /run/secrets/vnc_password
+    restart: unless-stopped
+```
+
+Building the project and running:
+
+```shell
+$ docker compose --project-directory ./examples/chromium build
+$ docker compose --project-directory ./examples/chromium up
+```
+
+### How to change user or group ID?
+
+```shell
+$ docker run -d --name chromium_1 \
+      -p 5900:5900 \
+      --shm-size 2g \
+      -e USER_UID=1001 \
+      -e USER_GID=1001 \
+      --restart unless-stopped \
+      chromium
 ```
 
 The source code for the example is available in the `examples/chromium` directory.
