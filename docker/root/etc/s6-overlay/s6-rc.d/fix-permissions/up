@@ -1,0 +1,10 @@
+#!/command/execlineb -P
+
+with-contenv
+
+if {
+  bash -c "
+    source /usr/local/share/switch-user.sh
+    patchUser user "$USER_UID" "$USER_GID"
+  "
+}
