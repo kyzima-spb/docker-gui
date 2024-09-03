@@ -215,9 +215,9 @@ The source code for the example is available in the `examples/chromium` director
 ## Build Arguments
 
 * `RELEASE` - The release name of the Debian distribution.
-  Available values are `bullseye-slim`, `bullseye`,
-  `buster-slim`, `buster`, `stretch-slim`, `stretch`.
-  The default is `bullseye-slim`.
+  Available values are `bookworm-slim`, `bookworm`, `bullseye-slim`, `bullseye`,
+  `buster-slim`, `buster`.
+  The default is `bookworm-slim`.
 * `S6_DOWNLOAD_URL` - Download URL for [s6-overlay][1].
   The default is `https://github.com/just-containers/s6-overlay/releases/download`.
 * `S6_OVERLAY_VERSION` - [s6-overlay][1] version.
