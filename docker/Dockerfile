@@ -58,9 +58,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         x11vnc \
         numix-gtk-theme \
         xmlstarlet \
-    && if [ "$VERSION_CODENAME" = 'buster' ]; then \
-          apt install -yq --no-install-recommends python; \
-       fi
+        $([ "$VERSION_CODENAME" = 'buster' ] && echo 'python')
 
 COPY --from=download /s6 /
 COPY ./ /
