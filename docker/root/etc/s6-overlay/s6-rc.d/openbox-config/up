@@ -7,6 +7,8 @@ if {
         -N o="http://openbox.org/3.4/rc" \
         -u /o:openbox_config/o:theme/o:name -v Numix \
         -u /o:openbox_config/o:desktops/o:number -v 1 \
+        -d "//o:mouse/o:context[@name='Root']/o:mousebind[@button='Middle' and @action='Press']" \
+        -d "//o:mouse/o:context[@name='Root']/o:mousebind[@button='Right' and @action='Press']" \
             /etc/xdg/openbox/rc.xml
 }
 
