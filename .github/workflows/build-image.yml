@@ -24,56 +24,29 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
-        name: Set GHCR_IMAGE environment variable
-        env:
-          IMAGE: ${{ inputs.image }}
-        run: echo "GHCR_IMAGE=ghcr.io/$GITHUB_REPOSITORY_OWNER/${IMAGE##*/}" >> $GITHUB_ENV
-      -
-        name: Docker meta
-        uses: docker/metadata-action@v5
-        id: meta
+        name: Build and Push image
+        uses: kyzima-spb/gh-actions/.github/actions/docker-build-image@master
+        id: build
         with:
+          context: ./docker/root
+          file: ./docker/Dockerfile
           images: |
             ${{ inputs.image }}
-            ${{ env.GHCR_IMAGE }}
+            ghcr
+          build-args: |
+            RELEASE=${{ inputs.release }}
           tags: |
             ${{ inputs.release }}
           flavor: |
             latest=${{ inputs.latest }}
-      -
-        name: Set CACHE_IMAGE environment variable
-        run: echo "CACHE_IMAGE=${{ env.GHCR_IMAGE }}:buildcache-${{ steps.meta.outputs.version }}" >> $GITHUB_ENV
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      -
-        name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      -
-        name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        if: ${{ inputs.push }}
-        name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: ./docker/root
-          file: ./docker/Dockerfile
-          build-args: |
-            RELEASE=${{ inputs.release }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.annotations }}
-          cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
-          cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
-          push: true
+          cache: |
+            arg=default,version=buildcache-${{ inputs.release }}
+          push: ${{ inputs.push }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          # github-username: ${{ github.repository_owner }}
+          # github-password: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ github.token }}
 
   delete-untagged:
     if: ${{ inputs.push }}
@@ -113,36 +86,15 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
-        name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ${{ env.IMAGE_NAME }}
-          tags: |
-            latest
-      -
-        name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      -
-        name: Build and push
-        uses: docker/build-push-action@v6
+        name: Build and Push example image
+        uses: kyzima-spb/gh-actions/.github/actions/docker-build-image@master
         with:
           context: ./examples/chromium/root
           file: ./examples/chromium/Dockerfile
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.annotations }}
-          cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
-          cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
-          push: true
+          images: ${{ env.IMAGE_NAME }}
+          tags: latest
+          cache: arg=default,repo=${{ env.IMAGE_NAME }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - 
         name: Delete old versions of images
         uses: vlaurin/action-ghcr-prune@main
