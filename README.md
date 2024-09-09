@@ -1,6 +1,6 @@
 # docker-gui
 
-![preview](preview.png)
+![preview](https://github.com/kyzima-spb/docker-gui/blob/master/preview.png)
 
 **docker-gui** - is the base image for running GUI applications in Docker.
 

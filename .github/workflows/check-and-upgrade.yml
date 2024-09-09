@@ -11,55 +11,15 @@ on:
       - .github/workflows/check-and-upgrade.yml
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    outputs:
-      isLatest: ${{ steps.current.outputs.version == steps.latest.outputs.version }}
-      currentVersion: ${{ steps.current.outputs.version }}
-      latestVersion: ${{ steps.latest.outputs.version }}
-      releaseDescription: ${{ steps.latest.outputs.description }}
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v4
-      -
-          name: Get current release
-          id: current
-          working-directory: ./docker
-          run: echo "version=$(grep -oP '(?<=S6_OVERLAY_VERSION=")[^"]+' Dockerfile)" >> $GITHUB_OUTPUT
-      -
-        name: Get latest release
-        uses: kyzima-spb/gh-actions/.github/actions/latest-release@master
-        id: latest
-        with:
-          owner: 'just-containers'
-          repo: 's6-overlay'
-
-  upgrade:
-    needs: check
-    if: ${{ !fromJSON(needs.check.outputs.isLatest) }}
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v4
-      -
-        name: Patch S6 version in Dockerfile
-        working-directory: ./docker
-        run: perl -i -pe 's|(?<=S6_OVERLAY_VERSION=")[^"]+|${{ needs.check.outputs.latestVersion }}|' Dockerfile
-      -
-        name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
-        env:
-          MESSAGE: >
-            Bump s6-overlay
-            from ${{ needs.check.outputs.currentVersion }}
-            to ${{ needs.check.outputs.latestVersion }}
-        with:
-          branch: checker/latest-version
-          delete-branch: true
-          title: ${{ env.MESSAGE }}
-          commit-message: ${{ env.MESSAGE }}
-          labels: |
-            automated pr
-          body: ${{ needs.check.outputs.releaseDescription }}
+  run:
+    uses: kyzima-spb/gh-actions/.github/workflows/bump-version.yml@master
+    secrets:
+      github-token: ${{ secrets.PAT }}
+    with:
+      working-directory: ./docker
+      commit-message: "Bump s6-overlay from {current} to {latest}"
+      lookup: just-containers/s6-overlay
+      get-current-release-command: |
+        grep -oP '(?<=S6_OVERLAY_VERSION=")[^"]+' Dockerfile
+      patch-files-command: |
+        perl -i -pe 's|(?<=S6_OVERLAY_VERSION=")[^"]+|'${LATEST_VERSION}'|' Dockerfile
