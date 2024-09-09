@@ -49,7 +49,7 @@ jobs:
         run: perl -i -pe 's|(?<=S6_OVERLAY_VERSION=")[^"]+|${{ needs.check.outputs.latestVersion }}|' Dockerfile
       -
         name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         env:
           MESSAGE: >
             Bump s6-overlay
