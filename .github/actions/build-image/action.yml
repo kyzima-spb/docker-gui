@@ -22,7 +22,7 @@ runs:
   using: composite
   steps:
     -
-      uses: kyzima-spb/gh-actions/.github/workflows/docker-build-image.yml@master
+      uses: kyzima-spb/gh-actions/.github/actions/docker-build-image@master
       with:
         context: ./docker/root
         file: ./docker/Dockerfile
@@ -38,7 +38,6 @@ runs:
         cache: |
           arg=default,version=buildcache-${{ inputs.release }}
         push: ${{ inputs.push }}
-      secrets:
         docker-username: ${{ inputs.docker-username }}
         docker-password: ${{ inputs.docker-password }}
         github-token: ${{ inputs.github-token }}
