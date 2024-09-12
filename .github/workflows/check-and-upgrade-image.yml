@@ -8,8 +8,7 @@ on:
       - master
       - dev-master
     paths:
-      - .github/workflows/run-upgrade-image.yml
-      - .github/workflows/upgrade-image.yml
+      - .github/workflows/check-and-upgrade-image.yml
 
 jobs:
   setup:
@@ -17,13 +16,31 @@ jobs:
     with:
       path: ./.github/matrix.json
 
-  run:
+  rebuild:
     needs: setup
+    runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJSON(needs.setup.outputs.matrix) }}
-    uses: ./.github/workflows/upgrade-image.yml
-    with:
-      image: ${{ vars.IMAGE_NAME }}
-      release: ${{ matrix.release }}
-      latest: ${{ matrix.latest }}
-    secrets: inherit
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Check base Docker Image
+        id: check
+        uses: kyzima-spb/docker-image-need-update-action@v1
+        with:
+          base-image: "debian:${{ matrix.release }}"
+          user-image: "${{ vars.IMAGE_NAME }}:${{ matrix.release }}"
+      -
+        if: ${{ steps.check.outputs.needRebuild }}
+        name: Rebuild Docker Image
+        uses: ./.github/actions/build-image
+        with:
+          image: ${{ vars.IMAGE_NAME }}
+          release: ${{ matrix.release }}
+          latest: ${{ matrix.latest }}
+          push: ${{ github.ref_name == 'master' }}
+          docker-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          docker-password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
