@@ -1,0 +1,10 @@
+#!/command/execlineb -P
+
+with-contenv
+
+backtick -E HOME { homeof user }
+s6-env HOME="$HOME"
+
+redirfd -w 2 /dev/null
+
+s6-setuidgid user kodi -fs
