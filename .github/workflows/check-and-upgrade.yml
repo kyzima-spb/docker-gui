@@ -5,7 +5,6 @@ on:
     - cron: '45 5 * * *'
   push:
     branches:
-      - master
       - dev-master
     paths:
       - .github/workflows/check-and-upgrade.yml
@@ -13,8 +12,11 @@ on:
 jobs:
   run:
     uses: kyzima-spb/gh-actions/.github/workflows/bump-version.yml@master
+    permissions:
+      contents: write
+      pull-requests: write
     secrets:
-      github-token: ${{ secrets.PAT }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}
     with:
       working-directory: ./docker
       commit-message: "Bump s6-overlay from {current} to {latest}"
