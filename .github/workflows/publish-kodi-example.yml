@@ -1,0 +1,31 @@
+name: Build and publish Kodi image
+
+on:
+  push:
+    branches:
+      - master
+      - dev-master
+    paths:
+      - .github/workflows/publish-kodi-example.yml
+      - 'examples/kodi/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        uses: kyzima-spb/gh-actions/.github/actions/docker-build-image@master
+        with:
+          context: ./examples/kodi/root
+          file: ./examples/kodi/Dockerfile
+          images: |
+            {ghcr:kodi}
+          cache: |
+            arg=default,repo=kodi
+          push: ${{ github.ref_name == 'master' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}

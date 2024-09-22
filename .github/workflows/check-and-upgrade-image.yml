@@ -19,6 +19,8 @@ jobs:
   rebuild:
     needs: setup
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     strategy:
       matrix: ${{ fromJSON(needs.setup.outputs.matrix) }}
     steps:

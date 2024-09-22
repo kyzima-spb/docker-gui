@@ -28,7 +28,7 @@ runs:
         file: ./docker/Dockerfile
         images: |
           ${{ inputs.image }}
-          ghcr
+          {ghcr}
         build-args: |
           RELEASE=${{ inputs.release }}
         tags: |
