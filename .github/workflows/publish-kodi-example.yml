@@ -23,9 +23,9 @@ jobs:
         with:
           context: ./examples/kodi/root
           file: ./examples/kodi/Dockerfile
-          images:
-            ghcr.io/kyzima-spb/kodi
+          images: |
+            {ghcr:kodi}
           cache: |
-            arg=default,repo=ghcr.io/kyzima-spb/kodi
+            arg=default,repo=kodi
           push: ${{ github.ref_name == 'master' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
