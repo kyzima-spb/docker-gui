@@ -14,6 +14,17 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
+    strategy:
+      matrix:
+        release:
+          - bullseye-slim
+          - bookworm-slim
+        include:
+          -
+            latest: false
+          -
+            latest: true
+            release: bookworm-slim
     steps:
       -
         name: Checkout
@@ -25,7 +36,13 @@ jobs:
           file: ./examples/kodi/Dockerfile
           images: |
             {ghcr:kodi}
+          build-args: |
+            RELEASE=${{ matrix.release }}
+          tags:
+            ${{ matrix.release }}
+          flavor: |
+            latest=${{ matrix.latest }}
           cache: |
-            arg=default,repo=kodi
+            arg=default,repo=kodi,version=buildcache-${{ matrix.release }}
           push: ${{ github.ref_name == 'master' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
