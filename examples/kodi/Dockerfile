@@ -9,7 +9,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     rm -f /etc/apt/apt.conf.d/docker-clean; \
     echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
     && apt update && apt install -yq --no-install-recommends \
+        ca-certificates \
         kodi \
-        kodi-repository-kodi
+        kodi-inputstream-adaptive \
+        kodi-repository-kodi \
+    && ln -s "$(getent passwd user | cut -d: -f6)/.kodi" /kodi
+
+VOLUME /kodi
 
 COPY ./ /
