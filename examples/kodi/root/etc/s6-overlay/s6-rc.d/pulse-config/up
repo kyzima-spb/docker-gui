@@ -1,0 +1,9 @@
+#!/command/execlineb -P
+
+with-contenv
+
+if {
+    redirfd -r 0 /etc/pulse/client.conf.tmpl
+    redirfd -w 1 /etc/pulse/client.conf
+    envsubst
+}

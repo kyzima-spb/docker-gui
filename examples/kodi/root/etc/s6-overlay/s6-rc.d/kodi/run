@@ -5,6 +5,8 @@ with-contenv
 backtick -E HOME { homeof user }
 s6-env HOME="$HOME"
 
+importas -D "" extraArgs KODI_EXTRA_ARGS
+
 redirfd -w 2 /dev/null
 
-s6-setuidgid user kodi -fs
+s6-setuidgid user kodi -fs --standalone "$extraArgs"

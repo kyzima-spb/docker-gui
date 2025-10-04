@@ -63,4 +63,4 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 COPY --from=download /s6 /
 COPY ./ /
 
-ENTRYPOINT ["/init"]
+ENTRYPOINT ["/docker-entrypoint.sh", "/init"]
