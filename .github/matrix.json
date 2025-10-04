@@ -1,7 +1,7 @@
 {
-  "release": ["bookworm-slim", "bullseye-slim", "buster-slim"],
+  "release": ["trixie-slim", "bookworm-slim", "bullseye-slim"],
   "include": [
     {"latest": false},
-    {"latest": true, "release": "bookworm-slim"}
+    {"latest": true, "release": "trixie-slim"}
   ]
 }
