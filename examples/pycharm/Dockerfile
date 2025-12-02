@@ -1,4 +1,6 @@
-FROM debian:bookworm-slim AS download
+ARG RELEASE="trixie-slim"
+
+FROM debian:$RELEASE AS download
 
 WORKDIR /pycharm
 
@@ -10,14 +12,7 @@ ADD ${PYCHARM_BASE_URL}/pycharm-professional-${PYCHARM_VERSION}.tar.gz /tmp/pych
 RUN tar --strip-components=1 -xzf /tmp/pycharm.tar.gz
 
 
-FROM kyzimaspb/gui
-
-#RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-#    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-#    rm -f /etc/apt/apt.conf.d/docker-clean; \
-#    echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
-#    && apt update && apt install -yq --no-install-recommends \
-#        chromium
+FROM kyzimaspb/gui:$RELEASE
 
 COPY --from=download /pycharm /opt/pycharm
 COPY ./ /

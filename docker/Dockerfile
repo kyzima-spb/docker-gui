@@ -39,19 +39,18 @@ WORKDIR /tmp
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=":99"
-ENV VNC_SERVER_PASSWORD=""
 ENV USER_UID=1000
 ENV USER_GID=1000
 
 RUN useradd -m user -s /bin/bash \
-    && mkdir .X11-unix && chmod 1777 .X11-unix
+    && install -m 1777 -d .X11-unix
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     rm -f /etc/apt/apt.conf.d/docker-clean; \
     echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
     && . /etc/os-release \
-    && apt update && apt install -yq --no-install-recommends \
+    && apt-get update && apt-get install -yq --no-install-recommends \
         locales \
         xvfb \
         openbox \

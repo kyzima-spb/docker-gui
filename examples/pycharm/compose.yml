@@ -1,0 +1,8 @@
+services:
+  pycharm:
+    build:
+      context: ./root
+      dockerfile: ../Dockerfile
+    ports:
+      - "5900:5900"
+    restart: unless-stopped
