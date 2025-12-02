@@ -1,19 +1,19 @@
-#secrets:
-#  vnc_password:
-#    file: ./secrets/vnc_password
+secrets:
+  vnc_password:
+    file: ./secrets/vnc_password
 
 services:
   kodi:
     build:
       context: ./root
       dockerfile: ../Dockerfile
-#    secrets:
-#      - vnc_password
+    secrets:
+      - vnc_password
     ports:
       - "5900:5900"
     environment:
       KODI_EXTRA_ARGS: --debug
-#      VNC_SERVER_PASSWORD_FILE: /run/secrets/vnc_password
+      VNC_SERVER_PASSWORD_FILE: /run/secrets/vnc_password
     volumes:
       - /run/user/1000/pulse:/run/user/1000/pulse
     restart: unless-stopped
