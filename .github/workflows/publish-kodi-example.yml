@@ -19,12 +19,13 @@ jobs:
         release:
           - bullseye-slim
           - bookworm-slim
+          - trixie-slim
         include:
           -
             latest: false
           -
             latest: true
-            release: bookworm-slim
+            release: trixie-slim
     steps:
       -
         name: Checkout
